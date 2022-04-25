@@ -1,6 +1,7 @@
 # Project exclude paths
 .idea
 /temp/
+/vendor/
 /bootstrap.php
 /.phpunit.result.cache
 /token
