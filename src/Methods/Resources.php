@@ -11,7 +11,9 @@
 
 
 	use FileBrowserClient\Abstracts\Method;
+	use FileBrowserClient\Client;
 	use FileBrowserClient\Exceptions\ExceptionClient;
+	use FileBrowserClient\Token;
 
 	class Resources extends Method
 	{
@@ -30,16 +32,13 @@
 		 */
 		public function move(string $source, string $target)
 		{
-			$path = '/' . ltrim($source, '/');
-			$get  = http_build_query(
-				[
-					"action"      => "rename",
-					"destination" => $target,
-					"override"    => 1,
-					"rename"      => 0,
+			$Client = new Client();
+			$options = [
+				'headers' => [
+					'x-auth' => $token = Token::get()
 				]
-			);
-			$this->client->apiPatch('/api/resources' . $path . "?$get");
-			return $this->client->statusCode();
+			];
+			$res = $Client->patch('/api/resources' . $source . '?action=rename&destination=' . $target . '&override=true&rename=false', $options);
+			return $res->getStatusCode();
 		}
 	}
