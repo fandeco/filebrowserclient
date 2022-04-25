@@ -34,12 +34,14 @@ class DownloadTest extends TestCase
 
 
         foreach ($items as $item) {
-            $Load->addFile($item['path']);
+            if (!$item['isDir']) {
+
+                $Load->addFile($item['path']);
+            }
         }
 
         // Скачивание целой директории
         if ($files = $Load->getFiles()) {
-
             $limit = 50;
             $files = $Load->splitArray($files);
 

@@ -72,6 +72,11 @@ class Download
             throw new ExceptionClient('Не указана директория для сохранения изображений');
         }
 
+        if (!file_exists($this->target)) {
+            throw new ExceptionClient('Целевая папка не найдена ' . $this->target);
+        }
+
+
         $config = [
             'verify' => false,
             'timeout' => 30.0,
