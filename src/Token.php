@@ -74,7 +74,7 @@ class Token
 
         $token = file_get_contents(FILE_BROWSER_CLIENT_TOKEN_PATH);
         if (strlen($token) !== 508) {
-            throw new ExceptionClient('Токен содержит неправильную длину');
+            //throw new ExceptionClient('Токен содержит неправильную длину');
         }
         return $token;
     }

@@ -156,9 +156,25 @@ final class Client extends \GuzzleHttp\Client
         }
         return $res;
     }
+	/**
+	 * Отправка запроса
+	 * @param $uri
+	 * @return bool
+	 * @throws ExceptionClient
+	 */
+	public function apiPatch($uri,$params=[])
+	{
+		$this->token();
+		$res = $this->sendRequest('patch', $uri,$params);
+		if ($this->statusCode() !== 200) {
+			throw new ExceptionClient('Status code' . $this->statusCode());
+		}
+		return $res;
+	}
 
 
-    /**
+
+	/**
      * @param $method
      * @param $url
      * @param array $params
