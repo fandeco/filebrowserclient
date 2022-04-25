@@ -35,8 +35,8 @@
 				[
 					"action"      => "rename",
 					"destination" => $target,
-					"override"    => TRUE,
-					"rename"      => FALSE,
+					"override"    => 1,
+					"rename"      => 0,
 				]
 			);
 			$this->client->apiPatch('/api/resources' . $path . "?$get");

@@ -193,7 +193,8 @@ final class Client extends \GuzzleHttp\Client
         $result = false;
         try {
             $this->_response_status = 200;
-            $config = array_merge([
+            $config = array_merge(
+				[
                 'http_errors' => true, // Для выброса статуса страницы 400
                 'timeout' => $this->_timeout, // Таймаут для содинения
                 'connect_timeout' => $this->_connect_timeout, // Время ожидания для конекта
@@ -212,7 +213,11 @@ final class Client extends \GuzzleHttp\Client
             if ($method == 'get' && !empty($params)) {
                 $url .= '?' . Psr7\build_query($params);
             }
+			if(mb_strtolower($method) === 'patch'){
+				$this->response = $this->patch($url, $options);
+			}else{
             $this->response = $this->request($method, $url, $options);
+			}
 
 
             # $this->response = $this->{$method}($url, $options);
