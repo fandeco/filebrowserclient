@@ -31,18 +31,22 @@ class Download
         $this->target = $targetDir;
     }
 
-    public function addFile(string $filePath)
+    public function addFile(string $source, string $target)
     {
-        if (empty($filePath)) {
+        if (empty($source)) {
             throw new ExceptionClient('Передан пустой путь');
         }
-        $filePath = ltrim($filePath, '/');
-        $this->files[] = $filePath;
+        $source = '/' . ltrim($source, '/');
+        $target = '/' . ltrim($target, '/');
+        $this->files[] = [
+            'source' => $source,
+            'target' => $target
+        ];
     }
 
     public function getFiles()
     {
-        return array_unique($this->files);
+        return !$this->files ? null : $this->files;
     }
 
     public function resetFiles()
@@ -67,16 +71,6 @@ class Download
             throw new ExceptionClient('Максимальное количество скачиваемых изображений за 1 раз ' . $limit . ' шт');
         }
 
-
-        if (!$this->target) {
-            throw new ExceptionClient('Не указана директория для сохранения изображений');
-        }
-
-        if (!file_exists($this->target)) {
-            throw new ExceptionClient('Целевая папка не найдена ' . $this->target);
-        }
-
-
         $config = [
             'verify' => false,
             'timeout' => 30.0,
@@ -90,10 +84,11 @@ class Download
         $downloads = [];
         foreach ($urls as $file) {
             $downloads[] = [
-                'source' => $file . '?auth=' . $this->token,
-                'target' => $this->target . basename($file)
+                'source' => $file['source'] . '?auth=' . $this->token,
+                'target' => $file['target']
             ];
         }
+
 
         $promises = [];
         foreach ($downloads as $k => $data) {
@@ -122,7 +117,7 @@ class Download
 
             if ($exception) {
                 if ($result['state'] !== 'fulfilled') {
-                    throw new Exception('Не удалось скачать изображение' . $source);
+                    throw new Exception('Не удалось скачать изображение: ' . $source);
                 }
 
 

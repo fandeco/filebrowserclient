@@ -10,6 +10,7 @@ namespace FileBrowserClient\Tests;
 
 use FileBrowserClient\Tests\TestCase;
 use FileBrowserClient\Token;
+use GuzzleHttp\Client;
 
 class TokenTest extends TestCase
 {
@@ -19,4 +20,5 @@ class TokenTest extends TestCase
         $token = Token::create();
         self::assertTrue(!empty($token));
     }
+
 }
