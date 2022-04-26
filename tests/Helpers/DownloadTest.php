@@ -17,7 +17,10 @@ class DownloadTest extends TestCase
 {
     public function testGet()
     {
-        $token = Token::get();
+
+        $token = Token::create();
+
+
         $targetPath = SAVE_PATH;
         $Resource = new Resources();
         $list = $Resource->get(DOWNLOAD_PATH);

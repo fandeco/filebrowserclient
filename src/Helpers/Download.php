@@ -71,11 +71,13 @@ class Download
             throw new ExceptionClient('Максимальное количество скачиваемых изображений за 1 раз ' . $limit . ' шт');
         }
 
+        $base_uri = rtrim(FILE_BROWSER_CLIENT_URL, '/') . '/api/raw/';
+
         $config = [
             'verify' => false,
             'timeout' => 30.0,
             #'debug' => true,
-            'base_uri' => rtrim(FILE_BROWSER_CLIENT_URL, '/') . '/api/raw/',
+            'base_uri' => $base_uri,
         ];
 
 
@@ -84,7 +86,7 @@ class Download
         $downloads = [];
         foreach ($urls as $file) {
             $downloads[] = [
-                'source' => $file['source'] . '?auth=' . $this->token,
+                'source' => ltrim($file['source'], '/') . '?auth=' . $this->token,
                 'target' => $file['target']
             ];
         }
@@ -94,7 +96,6 @@ class Download
         foreach ($downloads as $k => $data) {
             $source = $data['source'];
             $target = $data['target'];
-
             if (file_exists($target)) {
                 // Удаляем для безопасности
                 unlink($target);
@@ -121,7 +122,10 @@ class Download
                 }
 
 
-                $code = $result['value']->getStatusCode();
+                /* @var \GuzzleHttp\Psr7\Response $Response */
+                $Response = $result['value'];
+
+                $code = $Response->getStatusCode();
                 if ($code !== 200) {
                     throw new Exception('Error download ' . $source);
                 }
