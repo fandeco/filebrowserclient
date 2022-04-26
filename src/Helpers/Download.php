@@ -118,7 +118,7 @@ class Download
 
             if ($exception) {
                 if ($result['state'] !== 'fulfilled') {
-                    throw new Exception('Не удалось скачать изображение: ' . $source);
+                    throw new Exception('Не удалось скачать изображение: ' . $base_uri . $source);
                 }
 
 
@@ -127,7 +127,7 @@ class Download
 
                 $code = $Response->getStatusCode();
                 if ($code !== 200) {
-                    throw new Exception('Error download ' . $source);
+                    throw new Exception('Error download ' . $base_uri . $source);
                 }
 
                 if (!file_exists($target)) {
