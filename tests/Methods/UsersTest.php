@@ -91,6 +91,13 @@ class UsersTest extends TestCase
             ]
         ];
         $User = new Users();
+
+        $list = $User->list();
+        echo '<pre>';
+        print_r($list);
+        die;
+
+
         $User->setGroups($groups);
         $users = [
             [

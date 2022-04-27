@@ -20,6 +20,8 @@ abstract class Method
     protected $uri = '';
     protected $renew = false;
 
+    protected ?\GuzzleHttp\Psr7\Response $response = null;
+
     public function __construct()
     {
         if (!defined('FILE_BROWSER_CLIENT_URL')) {
@@ -96,7 +98,7 @@ abstract class Method
     public function toArray()
     {
         if (!$this->response) {
-           return null;
+            return null;
         }
         $body = $this->response->getBody()->getContents();
         if (empty($body)) {
