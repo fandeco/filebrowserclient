@@ -58,7 +58,9 @@ class Token
         self::remove();
         try {
             if (!is_dir(dirname($path))) {
-                mkdir(dirname($path), 777, TRUE);
+                if (!mkdir($concurrentDirectory = dirname($path), 777, TRUE) && !is_dir($concurrentDirectory)) {
+                    throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+                }
             }
         } catch (Exception $e) {
             throw new ExceptionClient('Не удалось сохранить токен в файл');
@@ -67,7 +69,6 @@ class Token
         if (!file_exists($path)) {
             throw new ExceptionClient('Не удалось сохранить токен в файл');
         }
-
         return self::get();
     }
 
@@ -78,10 +79,6 @@ class Token
      */
     public static function get()
     {
-        if (defined('FILE_BROWSER_CLIENT_TOKEN')) {
-            return FILE_BROWSER_CLIENT_TOKEN;
-        }
-
         if (!file_exists(FILE_BROWSER_CLIENT_TOKEN_PATH)) {
             return NULL;
         }

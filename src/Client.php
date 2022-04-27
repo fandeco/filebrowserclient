@@ -17,9 +17,12 @@ use GuzzleHttp\Psr7;
 final class Client extends \GuzzleHttp\Client
 {
 
-
     /* @var string|null $_msg */
     protected $_msg;
+
+
+    /* @var bool $_msg */
+    protected bool $_error = false;
 
     /* @var string|null $_method */
     protected $_method;
@@ -49,6 +52,9 @@ final class Client extends \GuzzleHttp\Client
      * @var string
      */
     private $_body;
+
+
+    protected $response = null;
 
     /**
      * @param array $setting
@@ -156,25 +162,25 @@ final class Client extends \GuzzleHttp\Client
         }
         return $res;
     }
-	/**
-	 * Отправка запроса
-	 * @param $uri
-	 * @return bool
-	 * @throws ExceptionClient
-	 */
-	public function apiPatch($uri,$params=[])
-	{
-		$this->token();
-		$res = $this->sendRequest('patch', $uri,$params);
-		if ($this->statusCode() !== 200) {
-			throw new ExceptionClient('Status code' . $this->statusCode());
-		}
-		return $res;
-	}
+
+    /**
+     * Отправка запроса
+     * @param $uri
+     * @return bool
+     * @throws ExceptionClient
+     */
+    public function apiPatch($uri, $params = [])
+    {
+        $this->token();
+        $res = $this->sendRequest('patch', $uri, $params);
+        if ($this->statusCode() !== 200) {
+            throw new ExceptionClient('Status code' . $this->statusCode());
+        }
+        return $res;
+    }
 
 
-
-	/**
+    /**
      * @param $method
      * @param $url
      * @param array $params
@@ -194,16 +200,12 @@ final class Client extends \GuzzleHttp\Client
         try {
             $this->_response_status = 200;
             $config = array_merge(
-				[
-                'http_errors' => true, // Для выброса статуса страницы 400
-                'timeout' => $this->_timeout, // Таймаут для содинения
-                'connect_timeout' => $this->_connect_timeout, // Время ожидания для конекта
-                'headers' => [
-                    'User-Agent' => $this->_user_agent
-                ],
-                #'form_params' => $params,
-                'json' => $params
-            ], $this->_config);
+                [
+                    'http_errors' => true, // Для выброса статуса страницы 400
+                    'timeout' => $this->_timeout, // Таймаут для содинения
+                    'connect_timeout' => $this->_connect_timeout, // Время ожидания для конекта
+                    'json' => $params
+                ], $this->_config);
 
             $options = array_merge($config, $config);
             $this->_options = $options;
@@ -213,11 +215,11 @@ final class Client extends \GuzzleHttp\Client
             if ($method == 'get' && !empty($params)) {
                 $url .= '?' . Psr7\build_query($params);
             }
-			if(mb_strtolower($method) === 'patch'){
-				$this->response = $this->patch($url, $options);
-			}else{
-            $this->response = $this->request($method, $url, $options);
-			}
+            if (mb_strtolower($method) === 'patch') {
+                $this->response = $this->patch($url, $options);
+            } else {
+                $this->response = $this->request($method, $url, $options);
+            }
 
 
             # $this->response = $this->{$method}($url, $options);
@@ -231,7 +233,6 @@ final class Client extends \GuzzleHttp\Client
         } catch (\Exception $e) {
             $this->_error = true;
         }
-
 
         if (!is_null($e)) {
             if ($e->getCode()) {
@@ -276,41 +277,6 @@ final class Client extends \GuzzleHttp\Client
         }
         $array = \GuzzleHttp\json_decode($body, true, 512);
         return is_array($array) ? $array : null;
-    }
-
-
-    /**
-     * Вернет true если было исключение
-     * @return boolean
-     */
-    public function isExceptionError()
-    {
-        return $this->_exception_error;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getOptions()
-    {
-        return $this->_options;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDebug()
-    {
-        return [
-            'success' => !$this->_error,
-            'response_status' => $this->_response_status,
-            'url' => $this->_url,
-            'method' => $this->_method,
-            'options' => $this->_options,
-            'msg' => $this->getMsg(),
-            'array' => $this->getArray(),
-            'body' => $this->getBody(),
-        ];
     }
 
     public function statusCode()

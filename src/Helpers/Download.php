@@ -117,15 +117,16 @@ class Download
             $downloads[$k]['state'] = $state;
 
             if ($exception) {
-                if ($result['state'] !== 'fulfilled') {
-                    throw new Exception('Не удалось скачать изображение: ' . $base_uri . $source);
-                }
-
 
                 /* @var \GuzzleHttp\Psr7\Response $Response */
                 $Response = $result['value'];
 
                 $code = $Response->getStatusCode();
+                if ($result['state'] !== 'fulfilled') {
+                    throw new Exception('Не удалось скачать изображение: status ' . $code . $base_uri . $source);
+                }
+
+
                 if ($code !== 200) {
                     throw new Exception('Error download ' . $base_uri . $source);
                 }
