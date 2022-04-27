@@ -95,6 +95,9 @@ abstract class Method
 
     public function toArray()
     {
+        if (!$this->response) {
+           return null;
+        }
         $body = $this->response->getBody()->getContents();
         if (empty($body)) {
             return null;
