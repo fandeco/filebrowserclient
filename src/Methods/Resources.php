@@ -26,19 +26,9 @@ class Resources extends Method
         return $this->get('/api/resources' . $relativePath);
     }
 
-    protected function path(string $relativePath)
-    {
-        $relativePath = $this->lpath($relativePath);
-        $relativePath = $this->rpath($relativePath);
-        return $relativePath;
-    }
 
     public function has(string $relativePath)
     {
-        echo '<pre>';
-        print_r($relativePath);
-        die;
-
         $relativePath = $this->path($relativePath);
         $item = $this->list($relativePath);
         return $item === true;
@@ -53,37 +43,25 @@ class Resources extends Method
      */
     public function move(string $source, string $target, $override = true, $rename = false)
     {
-        $source = $this->lpath($source);
-        $target = $this->lpath($target);
+        $source = $this->path($source);
+        $target = $this->path($target);
         $uri = '/api/resources' . $source . '?action=rename&destination=' . $target . '&override=' . $override . '&rename=' . $rename;
         return $this->patch($uri);
     }
 
 
-    public function find(string $relativePath)
+    public function find(string $name, string $relativePath)
     {
         $list = $this->list($relativePath);
         if ($list === true) {
-            return $this->toArray();
+            $data = $this->toArray();
+            foreach ($data['items'] as $item) {
+                if ($item['name'] === $name) {
+                    return $item;
+                }
+            }
         }
         return null;
-    }
-
-
-    /**
-     * @param $id
-     * @param $data
-     * @return bool|string
-     */
-    public function update($id, $data)
-    {
-        echo '<pre>';
-        print_r($data);
-        die;
-
-        return $this->put('/api/resources/' . $id, [
-            'json' => $data
-        ]);
     }
 
 
@@ -95,8 +73,7 @@ class Resources extends Method
      */
     public function rm(string $relativePath, bool $force = false)
     {
-        $relativePath = $this->lpath($relativePath);
-        $relativePath = $this->rpath($relativePath);
+        $relativePath = $this->path($relativePath);
         if (!$force) {
             $res = $this->list($relativePath);
             if ($res === true) {
@@ -116,10 +93,24 @@ class Resources extends Method
      */
     public function create(string $relativePath, array $data = ['override' => false])
     {
-        $relativePath = $this->lpath($relativePath);
-        $relativePath = $this->rpath($relativePath);
+        $relativePath = $this->path($relativePath);
         $uri = '/api/resources' . $relativePath;
         return $this->post($uri, ['json' => $data]);
     }
 
+
+    protected function path(string $relativePath)
+    {
+        $relativePath = $this->lpath($relativePath);
+        $relativePath = $this->rpath($relativePath);
+        return $relativePath;
+    }
+
+
+    public function search(string $query, string $relativePath)
+    {
+        $relativePath = $this->path($relativePath);
+        $relativePath .= '?query=' . $query;
+        return $this->get('/api/search' . $relativePath);
+    }
 }

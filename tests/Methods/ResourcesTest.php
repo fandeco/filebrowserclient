@@ -13,7 +13,6 @@ use FileBrowserClient\Tests\TestCase;
 
 class ResourcesTest extends TestCase
 {
-
     public function testGet()
     {
         $Resource = new Resources();
@@ -29,15 +28,11 @@ class ResourcesTest extends TestCase
         self::assertArrayHasKey('items', $Resource->toArray());
     }
 
-    public function testMove()
+    public function testFind()
     {
         $Resource = new Resources();
-        $list = $Resource->move("/NewCatalog/dsadasd/vendorDir", '/NewCatalog/vendorDir');
-        echo '<pre>';
-        var_dump($list);
-        die;
-
-        self::assertArrayHasKey('items', $list);
+        $item = $Resource->find("vendorDir", '/NewCatalog');
+        self::assertArrayHasKey('name', $item);
     }
 
     public function testList()
@@ -59,11 +54,6 @@ class ResourcesTest extends TestCase
         $create = $Resource->create($relativePath);
         self::assertTrue($create);
         self::assertEquals(200, $Resource->statusCode());
-
-        $rm = $Resource->rm($relativePath);
-
-        self::assertTrue($rm);
-        self::assertEquals(200, $Resource->statusCode());
     }
 
     public function testRm()
@@ -78,7 +68,13 @@ class ResourcesTest extends TestCase
     public function testHas()
     {
         $Resource = new Resources();
-        $rm = $Resource->has('/NewCatalog/vendorDir');
-        self::assertTrue($rm);
+        self::assertTrue($Resource->has('/NewCatalog/vendorDir'));
+    }
+
+    public function testQuery()
+    {
+        $Resource = new Resources();
+        $res = $Resource->search('vendorDir', '/NewCatalog/');
+        self::assertTrue($res);
     }
 }
