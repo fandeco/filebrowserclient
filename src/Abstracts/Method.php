@@ -20,7 +20,8 @@ abstract class Method
     protected $uri = '';
     protected $renew = false;
 
-    protected ?\GuzzleHttp\Psr7\Response $response = null;
+    /* @var \GuzzleHttp\Psr7\Response $response */
+    protected $response = null;
 
     public function __construct()
     {
@@ -51,21 +52,25 @@ abstract class Method
 
     }
 
-    public function post(string $uri, $data)
+    protected function post(string $uri, $data)
     {
         return $this->send('post', $uri, $data);
     }
 
-    public function put($uri, $data)
+    protected function put($uri, $data)
     {
         return $this->send('put', $uri, $data);
     }
 
-    public function get($uri)
+    protected function get($uri)
     {
         return $this->send('get', $uri);
     }
 
+    protected function patch(string $uri)
+    {
+        return $this->send('patch', $uri);
+    }
 
     public function delete(string $uri)
     {
@@ -95,15 +100,27 @@ abstract class Method
         return true;
     }
 
+    public function statusCode()
+    {
+        return $this->response->getStatusCode();
+    }
+
+
     public function toArray()
     {
         if (!$this->response) {
             return null;
         }
-        $body = $this->response->getBody()->getContents();
-        if (empty($body)) {
+
+        if (method_exists($this->response, 'getBody')) {
+            $body = $this->response->getBody()->getContents();
+            if (empty($body)) {
+                return null;
+            }
+        } else {
             return null;
         }
+
         return \GuzzleHttp\json_decode($body, true, 512);
     }
 
@@ -130,5 +147,16 @@ abstract class Method
         return $response;
     }
 
+
+    protected function lpath(string $path)
+    {
+        return '/' . ltrim($path, '/');
+    }
+
+
+    protected function rpath(string $path)
+    {
+        return rtrim($path, '/') . '/';
+    }
 
 }

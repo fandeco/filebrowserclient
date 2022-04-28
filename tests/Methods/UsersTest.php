@@ -97,7 +97,6 @@ class UsersTest extends TestCase
         print_r($list);
         die;
 
-
         $User->setGroups($groups);
         $users = [
             [
