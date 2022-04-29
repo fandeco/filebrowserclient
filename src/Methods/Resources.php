@@ -37,14 +37,39 @@ class Resources extends Method
     /**
      * @param string $source
      * @param string $target
-     * @param bool $override заменить если существует
-     * @param false $rename переименовать
+     * @param bool $override
+     * @param false $rename
      * @return bool|string
+     * @throws \Exception
      */
     public function move(string $source, string $target, $override = true, $rename = false)
     {
+        return $this->_patch('rename', $source, $target, $override, $rename);
+    }
+
+    /**
+     * @param string $source
+     * @param string $target
+     * @param bool $override
+     * @param false $rename
+     * @return bool|string
+     * @throws \Exception
+     */
+    public function copy(string $source, string $target, $override = true, $rename = false)
+    {
+        return $this->_patch('copy', $source, $target, $override, $rename);
+    }
+
+    private function _patch(string $action, string $source, string $target, $override = true, $rename = false)
+    {
+        if ($action !== 'rename' || $action !== 'copy') {
+            throw new \Exception('allowed action rename or copy');
+        }
+
         $source = $this->path($source);
         $target = $this->path($target);
+        $override = $override ? 'true' : 'false';
+        $rename = $rename ? 'true' : 'false';
         $uri = '/api/resources' . $source . '?action=rename&destination=' . $target . '&override=' . $override . '&rename=' . $rename;
         return $this->patch($uri);
     }

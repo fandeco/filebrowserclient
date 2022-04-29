@@ -29,6 +29,24 @@ class FilesTest extends TestCase
         self::assertEquals(200, $Resource->statusCode());
     }
 
+
+    public function testMove2()
+    {
+        //EXCHANGER
+        $Resource = new Files();
+
+        #A1002LM-6CC.jpg
+        $res = $Resource->copy('/EXCHANGER/test 2/A1002LM-6CC.jpg', '/ФОТОБАНК/ARTE LAMP/A1002LM-6CC.jpg');
+        #$res = $Resource->move('/EXCHANGER/test 2/A1002LM-6CC.jpg', '/ФОТОБАНК/ARTE LAMP/A1002LM-6CC.jpg');
+
+        echo '<pre>';
+        print_r($res);
+        die;
+
+        self::assertEquals(200, $Resource->statusCode());
+
+    }
+
     public function testQuery()
     {
         $Resource = new Files();
