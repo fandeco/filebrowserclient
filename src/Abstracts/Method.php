@@ -136,9 +136,12 @@ abstract class Method
 
         switch ($method) {
             case 'get':
+            case 'delete':
                 $response = $this->{$method}($uri);
                 break;
             case 'post':
+            case 'patch':
+            case 'put':
                 $response = $this->{$method}($uri, $data);
                 break;
             default:
