@@ -60,72 +60,17 @@ class Resources extends Method
         return $this->_patch('copy', $source, $target, $override, $rename);
     }
 
-    function encodeURI($url)
-    {
-        if (empty($url)) return $url;
-
-        $res = preg_match('/.*:\/\/(.*?)\//', $url, $matches);
-        if ($res) {
-            // except host name
-            $url_tmp = str_replace($matches[0], "", $url);
-
-            // except query parameter
-            $url_tmp_arr = explode("?", $url_tmp);
-
-            // encode each tier
-            $url_tear = explode("/", $url_tmp_arr[0]);
-            foreach ($url_tear as $key => $tear) {
-                $url_tear[$key] = rawurlencode($tear);
-            }
-
-            $ret_url = $matches[0] . implode('/', $url_tear);
-
-            // encode query parameter
-            if (count($url_tmp_arr) >= 2) {
-                $ret_url .= "?" . $this->encodeURISub($url_tmp_arr[1]);
-            }
-            return $ret_url;
-        } else {
-            return $this->encodeURISub($url);
-        }
-
-    }
-
-    /**
-     * https://stackoverflow.com/questions/4929584/encodeuri-in-php/6059053
-     */
-    function encodeURISub($url)
-    {
-        // http://php.net/manual/en/function.rawurlencode.php
-        // https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/encodeURI
-        $unescaped = array(
-            '%2D' => '-', '%5F' => '_', '%2E' => '.', '%21' => '!', '%7E' => '~',
-            '%2A' => '*', '%27' => "'", '%28' => '(', '%29' => ')'
-        );
-        $reserved = array(
-            '%3B' => ';', '%2C' => ',', '%2F' => '/', '%3F' => '?', '%3A' => ':',
-            '%40' => '@', '%26' => '&', '%3D' => '=', '%24' => '$'
-        );
-        $score = array(
-            '%23' => '#'
-        );
-        return strtr(rawurlencode($url), array_merge($reserved, $unescaped, $score));
-
-    }
-
     private function _patch(string $action, string $source, string $target, $override = true, $rename = false)
     {
-        if ($action !== 'rename' && $action !== 'copy') {
-            throw new \Exception('allowed action "rename" or "copy"');
+        if ($action !== 'rename' || $action !== 'copy') {
+            throw new \Exception('allowed action rename or copy');
         }
 
         $source = $this->path($source);
         $target = $this->path($target);
         $override = $override ? 'true' : 'false';
         $rename = $rename ? 'true' : 'false';
-
-        $uri = '/api/resources' . $source . '?action=' . $action . '&destination=' . $target . '&override=' . $override . '&rename=' . $rename;
-        $uri = $this->encodeURI($uri);
+        $uri = '/api/resources' . $source . '?action=rename&destination=' . $target . '&override=' . $override . '&rename=' . $rename;
         return $this->patch($uri);
     }
 
