@@ -62,7 +62,7 @@ class Resources extends Method
 
     private function _patch(string $action, string $source, string $target, $override = true, $rename = false)
     {
-        if ($action !== 'rename' || $action !== 'copy') {
+        if ($action !== 'rename' && $action !== 'copy') {
             throw new \Exception('allowed action rename or copy');
         }
 
