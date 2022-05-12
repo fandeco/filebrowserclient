@@ -23,10 +23,10 @@ class FilesTest extends TestCase
     public function testMove()
     {
         $Resource = new Files();
-        $Resource->move('/NewCatalog/vendorDir/A4344SP-1BK_2.jpg', '/NewCatalog/A4344SP-1BK_2.jpg');
+        $Resource->copy('/NewCatalog/vendorDir/35112 6~C_newport.jpg', '/NewCatalog/35112 6~C_newport.jpg');
         self::assertEquals(200, $Resource->statusCode());
-        $Resource->move('/NewCatalog/A4344SP-1BK_2.jpg', '/NewCatalog/vendorDir/A4344SP-1BK_2.jpg');
-        self::assertEquals(200, $Resource->statusCode());
+        #$Resource->move('/NewCatalog/35112+6~C_newport.jpg', '/NewCatalog/vendorDir/35112+6~C_newport.jpg');
+        # self::assertEquals(200, $Resource->statusCode());
     }
 
 
@@ -37,12 +37,9 @@ class FilesTest extends TestCase
 
         #A1002LM-6CC.jpg
         $res = $Resource->copy('/EXCHANGER/test 2/A1002LM-6CC.jpg', '/ФОТОБАНК/ARTE LAMP/A1002LM-6CC.jpg');
-        #$res = $Resource->move('/EXCHANGER/test 2/A1002LM-6CC.jpg', '/ФОТОБАНК/ARTE LAMP/A1002LM-6CC.jpg');
-
         echo '<pre>';
         print_r($res);
         die;
-
         self::assertEquals(200, $Resource->statusCode());
 
     }
