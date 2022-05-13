@@ -145,6 +145,6 @@ class Resources extends Method
 	public function upload(string $fileName, $content, $override = FALSE)
 	{
 		$override = $override ? 'true' : 'false';
-		return $this->curlPost('api/resources/' . $fileName . '?override=' . $override, $content);
+		return $this->curlPost('/api/resources/' . $fileName . '?override=' . $override, $content);
 	}
 }
