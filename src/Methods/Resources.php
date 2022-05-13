@@ -138,4 +138,13 @@ class Resources extends Method
         $relativePath .= '?query=' . $query;
         return $this->get('/api/search' . $relativePath);
     }
+
+	/**
+	 * @throws ExceptionClient
+	 */
+	public function upload(string $fileName, $content, $override = FALSE)
+	{
+		$override = $override ? 'true' : 'false';
+		return $this->curlPost('api/resources/' . $fileName . '?override=' . $override, $content);
+	}
 }

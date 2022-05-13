@@ -100,17 +100,51 @@ abstract class Method
         return 200;
     }
 
+	/**
+	 * @throws ExceptionClient
+	 */
+	protected function curlPost(string $uri, $data = NULL)
+	{
+		$url  = FILE_BROWSER_CLIENT_URL . $uri;
+		$curl = curl_init();
+		curl_setopt_array($curl, [
+			CURLOPT_URL            => $url,
+			CURLOPT_RETURNTRANSFER => TRUE,
+			CURLOPT_ENCODING       => '',
+			CURLOPT_MAXREDIRS      => 10,
+			CURLOPT_TIMEOUT        => 0,
+			CURLOPT_FOLLOWLOCATION => TRUE,
+			CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST  => 'POST',
+			CURLOPT_POSTFIELDS     => $data,
+			CURLOPT_HTTPHEADER     => [
+				'x-auth: ' . $this->token,
+			],
+		]);
+
+		$response = curl_exec($curl);
+		$code     = curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+		curl_close($curl);
+		if (strripos($response, '200 OK') === FALSE) {
+			$this->curl_status = $response;
+			throw new ExceptionClient($response);
+		}
+		$this->curl_status = 200;
+		return 200;
+	}
+
     public function delete(string $uri)
     {
         return $this->send('delete', $uri);
     }
 
 
-    /**
-     * @param $method
-     * @param null|string $uri
-     * @param null|array $data
-     */
+	/**
+	 * @param             $method
+	 * @param null|string $uri
+	 * @param null|array  $data
+	 * @return bool|string
+	 */
     private function send($method, string $uri, $data = null)
     {
         $this->curl_status = null;
