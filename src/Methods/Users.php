@@ -12,7 +12,6 @@ namespace FileBrowserClient\Methods;
 use Exception;
 use FileBrowserClient\Abstracts\Method;
 use FileBrowserClient\Methods\Helpers\Rules;
-use FileBrowserClient\Token;
 
 class Users extends Method
 {
@@ -20,35 +19,36 @@ class Users extends Method
 
 
     public function setGroups(array $groups)
-    {
-        $this->groups = $groups;
-        return $this;
-    }
+	{
+		$this->groups = $groups;
+		return $this;
+	}
 
-    public function getGroups()
-    {
-        return $this->groups;
-    }
+	public function getGroups()
+	{
+		return $this->groups;
+	}
 
-    /**
-     * @param string $username
-     * @param string $password
-     * @param string $group
-     * @param false $lockPassword
-     * @param null $userPerm
-     * @param null $userRules
-     * @return array|null
-     */
-    public function createUser(string $username, string $password, string $group, $lockPassword = false, $userPerm = null, $userRules = null)
-    {
+	/**
+	 * @param string $username
+	 * @param string $password
+	 * @param string $group
+	 * @param false  $lockPassword
+	 * @param null   $userPerm
+	 * @param null   $userRules
+	 * @return array|null
+	 * @throws Exception
+	 */
+	public function createUser(string $username, string $password, string $group, $lockPassword = FALSE, $userPerm = NULL, $userRules = NULL)
+	{
 
-        $groups = $this->getGroups();
+		$groups = $this->getGroups();
 
-        if (!$groups) {
-            throw new Exception('Set Groups users');
-        }
+		if (!$groups) {
+			throw new Exception('Set Groups users');
+		}
 
-        if (!array_key_exists($group, $groups)) {
+		if (!array_key_exists($group, $groups)) {
             throw new Exception('Groups Not Found');
         }
         $groupData = $groups[$group];
@@ -187,14 +187,26 @@ class Users extends Method
         return $this->post('/api/users', ['json' => $data]);
     }
 
-    public function list()
-    {
-        $res = $this->get('/api/users');
-        if ($res === true) {
-            return $this->toArray();
-        }
-        return null;
-    }
+	public function list()
+	{
+		$res = $this->get('/api/users');
+		if ($res === TRUE) {
+			return $this->toArray();
+		}
+		return NULL;
+	}
 
-
+	public function changePassword(string $username, string $newPassword)
+	{
+		$id   = $this->find($username);
+		$data = [
+			'what'  => "user",
+			'data' => [
+				'id'       => $id,
+				'password' => $newPassword,
+			],
+			'which' => ['password'],
+		];
+		return $this->put('/api/users/' . $id, ['json' => $data]);
+	}
 }
