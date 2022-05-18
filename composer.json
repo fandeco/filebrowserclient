@@ -1,7 +1,7 @@
 {
     "name": "fandeco/filebrowserclient",
     "license": "MIT",
-    "version": "1.2.10",
+    "version": "1.2.11",
     "authors": [
         {
             "name": "webnitros",
@@ -10,7 +10,7 @@
     ],
     "scripts": {
         "tests" : "phpunit --bootstrap bootstrap.php",
-        "up:release": "gh release create \"1.2.10\" --generate-notes"
+        "up:release": "gh release create \"1.2.11\" --generate-notes"
     },
     "keywords": [
         "client",
