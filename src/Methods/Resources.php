@@ -60,19 +60,19 @@ class Resources extends Method
         return $this->_patch('copy', $source, $target, $override, $rename);
     }
 
-    private function _patch(string $action, string $source, string $target, $override = true, $rename = false)
-    {
-        if ($action !== 'rename' && $action !== 'copy') {
-            throw new \Exception('allowed action rename or copy');
-        }
+	private function _patch(string $action, string $source, string $target, $override = true, $rename = false)
+	{
+		if ($action !== 'rename' && $action !== 'copy') {
+			throw new \Exception('allowed action rename or copy');
+		}
 
-        $source = $this->path($source);
-        $target = $this->path($target);
-        $override = $override ? 'true' : 'false';
-        $rename = $rename ? 'true' : 'false';
-        $uri = '/api/resources' . $source . '?action=rename&destination=' . $target . '&override=' . $override . '&rename=' . $rename;
-        return $this->patch($uri);
-    }
+		$source = $this->path($source);
+		$target = $this->path($target);
+		$override = $override ? 'true' : 'false';
+		$rename = $rename ? 'true' : 'false';
+		$uri = '/api/resources' . $source . '?action='.$action.'&destination=' . $target . '&override=' . $override . '&rename=' . $rename;
+		return $this->patch($uri);
+	}
 
 
     public function find(string $name, string $relativePath)
