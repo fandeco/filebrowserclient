@@ -23,10 +23,10 @@ class FilesTest extends TestCase
     public function testMove()
     {
         $Resource = new Files();
-        $Resource->copy('/NewCatalog/vendorDir/35112 6~C_newport.jpg', '/NewCatalog/35112 6~C_newport.jpg');
+        #$Resource->copy('/NewCatalog/vendorDir/35112 6~C_newport.jpg', '/NewCatalog/35112 6~C_newport.jpg');
+        #self::assertEquals(200, $Resource->statusCode());
+        $Resource->move('/NewCatalog/000+000.jpg', '/NewCatalog/vendorDir/000+000.jpg');
         self::assertEquals(200, $Resource->statusCode());
-        #$Resource->move('/NewCatalog/35112+6~C_newport.jpg', '/NewCatalog/vendorDir/35112+6~C_newport.jpg');
-        # self::assertEquals(200, $Resource->statusCode());
     }
 
 

@@ -75,6 +75,12 @@ abstract class Method
     protected function patch(string $uri, $data = null)
     {
         $url = FILE_BROWSER_CLIENT_URL . $uri;
+
+
+#https://filebrowser.massive.ru/api/resources/NewCatalog/000%2B000.jpg?action=rename&destination=/NewCatalog/vendorDir/000%2B000.jpg&override=true&rename=false
+#https://filebrowser.massive.ru/api/resources/NewCatalog/000%2B000.jpg?action=rename&destination=/NewCatalog/vendorDir/000%252B000.jpg&override=false&rename=false
+
+
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => $url,
@@ -100,38 +106,38 @@ abstract class Method
         return 200;
     }
 
-	/**
-	 * @throws ExceptionClient
-	 */
-	protected function curlPost(string $uri, $data = NULL)
-	{
-		$url  = FILE_BROWSER_CLIENT_URL . $uri;
-		$curl = curl_init();
-		curl_setopt_array($curl, [
-			CURLOPT_URL            => $url,
-			CURLOPT_RETURNTRANSFER => TRUE,
-			CURLOPT_ENCODING       => '',
-			CURLOPT_MAXREDIRS      => 10,
-			CURLOPT_TIMEOUT        => 0,
-			CURLOPT_FOLLOWLOCATION => TRUE,
-			CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
-			CURLOPT_CUSTOMREQUEST  => 'POST',
-			CURLOPT_POSTFIELDS     => $data,
-			CURLOPT_HTTPHEADER     => [
-				'x-auth: ' . $this->token,
-			],
-		]);
+    /**
+     * @throws ExceptionClient
+     */
+    protected function curlPost(string $uri, $data = NULL)
+    {
+        $url = FILE_BROWSER_CLIENT_URL . $uri;
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => TRUE,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => TRUE,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $data,
+            CURLOPT_HTTPHEADER => [
+                'x-auth: ' . $this->token,
+            ],
+        ]);
 
-		$response = curl_exec($curl);
-		$code     = curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
-		curl_close($curl);
-		if (strripos($response, '200 OK') === FALSE) {
-			$this->curl_status = $response;
-			throw new ExceptionClient($response);
-		}
-		$this->curl_status = 200;
-		return 200;
-	}
+        $response = curl_exec($curl);
+        $code = curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+        curl_close($curl);
+        if (strripos($response, '200 OK') === FALSE) {
+            $this->curl_status = $response;
+            throw new ExceptionClient($response);
+        }
+        $this->curl_status = 200;
+        return 200;
+    }
 
     public function delete(string $uri)
     {
@@ -139,12 +145,12 @@ abstract class Method
     }
 
 
-	/**
-	 * @param             $method
-	 * @param null|string $uri
-	 * @param null|array  $data
-	 * @return bool|string
-	 */
+    /**
+     * @param             $method
+     * @param null|string $uri
+     * @param null|array $data
+     * @return bool|string
+     */
     private function send($method, string $uri, $data = null)
     {
         $this->curl_status = null;
