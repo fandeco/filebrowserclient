@@ -72,7 +72,12 @@ class Resources extends Method
         $rename = $rename ? 'true' : 'false';
 
         $uri = $this->encodeURI('/api/resources' . $source);
-		$uri = str_ireplace('%252B','%2B',$uri);
+		$uri = strtr($uri,
+					 [
+						 '%252B'=>'%2B',
+						 '%2520'=>' ',
+					 ]
+		);
         $action = '?action=' . $action . '&destination=' . $target . '&override=' . $override . '&rename=' . $rename;
         $action = $this->encodeURI($action);
         $uri .= str_ireplace('%2B', '%252B', $action);
